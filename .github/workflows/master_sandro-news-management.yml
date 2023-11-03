@@ -53,4 +53,3 @@ jobs:
           package: '*.jar'
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
-          url: ${{ secrets.DB_URL }}
