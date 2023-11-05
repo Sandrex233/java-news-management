@@ -23,6 +23,10 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://${{ secrets.DB_HOST }}:3306/${{ secrets.DB_NAME }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
