@@ -6,6 +6,7 @@ import com.news_management.model.Author;
 import com.news_management.model.News;
 import com.news_management.model.Tag;
 import com.news_management.repository.AuthorRepository;
+import com.news_management.repository.CommentRepository;
 import com.news_management.repository.NewsRepository;
 import com.news_management.repository.TagRepository;
 import com.news_management.utils.SortUtil;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -26,13 +28,16 @@ public class NewsService {
     private final AuthorRepository authorRepository;
 
     private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
-    public NewsService(NewsRepository newsRepository, AuthorRepository authorRepository, TagRepository tagRepository) {
+    public NewsService(NewsRepository newsRepository, AuthorRepository authorRepository, TagRepository tagRepository, CommentRepository commentRepository) {
         this.newsRepository = newsRepository;
         this.authorRepository = authorRepository;
         this.tagRepository = tagRepository;
+        this.commentRepository = commentRepository;
     }
 
+    @Transactional
     public News createNews(NewsDTO newsDTO) {
         String authorName = newsDTO.getAuthor().getName();
         Author author = authorRepository.findByName(authorName);
@@ -65,6 +70,7 @@ public class NewsService {
         return newsRepository.save(news);
     }
 
+    @Transactional
     public News updateNews(NewsDTO newsDTO, Long Id) throws EntityNotFoundException {
         // Retrieve the existing news
         News news = newsRepository.findById(Id).orElseThrow(() -> new EntityNotFoundException("News not found"));
@@ -141,6 +147,7 @@ public class NewsService {
     }
 
 
+    @Transactional
     public ResponseEntity<?> deleteNewsById(Long newsId) {
         News news = newsRepository.findById(newsId).orElse(null);
 

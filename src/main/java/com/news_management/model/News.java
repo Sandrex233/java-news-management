@@ -45,7 +45,7 @@ public class News {
     @Column(name = "Modified")
     private Date modified;
 
-    @OneToMany(mappedBy = "news")
+    @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Comment> comments;
 
