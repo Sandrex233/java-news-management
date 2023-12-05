@@ -8,12 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CommentDTO {
-    private long newsId;
-    @NotBlank(message = "Content can't be blank")
-    @NotNull(message = "Content can't be null")
-    @Size(min = 3, max = 255, message = "Content must have size from 3 to 255 letters")
-    private String content;
+@NoArgsConstructor
+public class AuthorDTO {
+    @NotBlank(message = "Author's name can't be blank")
+    @NotNull(message = "Author's name can't be null")
+    @Size(min = 3, max = 15, message = "Author must have a name with length from 3 to 15 letters")
+    private String authorName;
 }

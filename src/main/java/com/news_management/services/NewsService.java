@@ -1,6 +1,7 @@
 package com.news_management.services;
 
 import com.news_management.dto.NewsDTO;
+import com.news_management.exceptions.EntityNotFoundException;
 import com.news_management.model.Author;
 import com.news_management.model.News;
 import com.news_management.model.Tag;
@@ -8,15 +9,12 @@ import com.news_management.repository.AuthorRepository;
 import com.news_management.repository.NewsRepository;
 import com.news_management.repository.TagRepository;
 import com.news_management.utils.SortUtil;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -67,7 +65,7 @@ public class NewsService {
         return newsRepository.save(news);
     }
 
-    public News updateNews(NewsDTO newsDTO, Long Id) {
+    public News updateNews(NewsDTO newsDTO, Long Id) throws EntityNotFoundException {
         // Retrieve the existing news
         News news = newsRepository.findById(Id).orElseThrow(() -> new EntityNotFoundException("News not found"));
         Author existingAuthor = authorRepository.findByName(newsDTO.getAuthor().getName());
@@ -110,16 +108,10 @@ public class NewsService {
         return newsRepository.save(news);
     }
 
-    public List<News> getAllNews() {
-        List<News> newsList = newsRepository.findAll();
-
-        return newsList;
-    }
-
-    public News getNewsById(Long Id) {
+    public News getNewsById(Long Id) throws EntityNotFoundException {
         Optional<News> news = newsRepository.findById(Id);
 
-        return news.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "News with ID " + Id + " not found."));
+        return news.orElseThrow(() -> new EntityNotFoundException("News with ID " + Id + " not found."));
     }
 
     public List<News> searchNews(String partOfTitle, List<String> tags, String author, String partOfContent) {
@@ -163,20 +155,6 @@ public class NewsService {
 
         return ResponseEntity.ok().body("News with ID of " + newsId + " deleted successfully.");
     }
-
-    public List<News> getNewsWithSorting(String sortBy) {
-        Sort sort = SortUtil.getSort(sortBy);
-
-        return newsRepository.findAll(sort);
-    }
-
-    public Page<News> getNewsByPagination(int pageNo, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<News> pagingNews = newsRepository.findAll(pageRequest);
-
-        return pagingNews;
-    }
-
 
     public Page<News> getNewsWithPaginationAndSorting(Integer pageNo, Integer pageSize, String sortBy) {
         Sort sort = SortUtil.getSort(sortBy);

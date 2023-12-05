@@ -15,3 +15,5 @@ logs/
 mvnw
 mvnw.cmd
 log/
+
+src/main/resources/application.properties
